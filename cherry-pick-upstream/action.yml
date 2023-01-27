@@ -32,7 +32,7 @@ runs:
       working-directory: repo
       run: |
         git remote add upstream ${{ inputs.upstream_repository }}
-        git fetch upstream
+        git fetch upstream main
         git config user.name "${{ inputs.commit_name }}"
         git config user.email "${{ inputs.commit_email }}"
     - name: Run Shell script
