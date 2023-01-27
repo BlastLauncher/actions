@@ -4,6 +4,9 @@ inputs:
   repository:
     description: 'Repository to cherry-pick from'
     required: true
+  upstream_repository:
+    description: 'Upstream repository to cherry-pick from'
+    required: true
   token:
     description: 'Personal Access Token to use for the target repository'
     required: true
@@ -17,7 +20,12 @@ runs:
         REPO="https://${GITHUB_ACTOR}:${{ inputs.token }}@github.com/${{ inputs.repository }}.git"
         git clone --filter=blob:none --sparse --depth 1 $REPO repo
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
-      shell: bash        
+      shell: bash
+    - name: Add upstream for repo
+      shell: bash
+      working-directory: repo
+      run: |
+        git remote add upstream ${{ inputs.upstream_repository }}
     - name: Run Shell script
       shell: bash
       working-directory: repo

@@ -7,6 +7,10 @@ on:
         description: 'Repository to sync from'
         required: true
         default: 'BlastLauncher/extensions'
+      upstream_repository:
+        description: 'Upstream repository to sync from'
+        required: true
+        default: https://github.com/raycast/extensions.git
 
   # schedule:
   #   # Sync changes hourly
@@ -22,3 +26,4 @@ jobs:
         with:
           repository: ${{ inputs.repository }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_repository: ${{ inputs.upstream_repository }}
