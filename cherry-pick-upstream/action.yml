@@ -4,13 +4,16 @@ inputs:
   repository:
     description: 'Repository to cherry-pick from'
     required: true
+  token:
+    description: 'Personal Access Token to use for the target repository'
+    required: true
 runs:
   using: composite
   steps:
     - name: Partial Clone
       shell: bash
       run: |
-        REPO="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ inputs.repository }}.git"
+        REPO="https://${GITHUB_ACTOR}:${{ inputs.token }}@github.com/${{ inputs.repository }}.git"
         git clone --depth 1 --branch ${{ github.event.inputs.branch }} $REPO .
     - name: Run Shell script
       shell: bash
