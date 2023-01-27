@@ -25,7 +25,7 @@ jobs:
         uses: BlastLauncher/actions/cherry-pick-upstream@main
         with:
           repository: ${{ inputs.repository }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
           upstream_repository: ${{ inputs.upstream_repository }}
           commit_name: 'blastlauncher-bot[bot]'
           commit_email: '123755008+blastlauncher-bot[bot]@users.noreply.github.com'
