@@ -27,3 +27,5 @@ jobs:
           repository: ${{ inputs.repository }}
           token: ${{ secrets.GITHUB_TOKEN }}
           upstream_repository: ${{ inputs.upstream_repository }}
+          commit_name: 'blastlauncher-bot[bot]'
+          commit_email: '123755008+blastlauncher-bot[bot]@users.noreply.github.com'

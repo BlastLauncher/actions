@@ -10,6 +10,13 @@ inputs:
   token:
     description: 'Personal Access Token to use for the target repository'
     required: true
+  commit_name:
+    description: 'Name to use for the commit'
+    required: true
+    default: 'GitHub Action'
+  commit_email:
+    description: 'Email to use for the commit'
+    required: true
 runs:
   using: composite
   steps:
@@ -26,6 +33,8 @@ runs:
       run: |
         git remote add upstream ${{ inputs.upstream_repository }}
         git fetch upstream
+        git config user.name "${{ inputs.commit_name }}"
+        git config user.email "${{ inputs.commit_email }}"
     - name: Run Shell script
       shell: bash
       working-directory: repo
