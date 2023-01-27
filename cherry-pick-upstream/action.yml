@@ -25,6 +25,7 @@ runs:
       working-directory: repo
       run: |
         git remote add upstream ${{ inputs.upstream_repository }}
+        git fetch upstream
     - name: Run Shell script
       shell: bash
       working-directory: repo
