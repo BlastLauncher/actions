@@ -13,12 +13,17 @@ runs:
     - name: Partial Clone
       shell: bash
       run: |
+        mkdir repo
         REPO="https://${GITHUB_ACTOR}:${{ inputs.token }}@github.com/${{ inputs.repository }}.git"
-        git clone --depth 1 --branch ${{ github.event.inputs.branch }} $REPO .
+        git clone --filter=blob:none --sparse --depth 1 $REPO repo
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash        
     - name: Run Shell script
       shell: bash
+      working-directory: repo
       run: script.sh
     - name: Push to branch
       shell: bash
+      working-directory: repo
       run: |
         git push
