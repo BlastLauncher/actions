@@ -1,0 +1,21 @@
+name: Cherry-Pick Upstream commits
+description: Cherry-pick upstream commits to a branch
+inputs:
+  repository:
+    description: 'Repository to cherry-pick from'
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Partial Clone
+      shell: bash
+      run: |
+        REPO="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ inputs.repository }}.git"
+        git clone --depth 1 --branch ${{ github.event.inputs.branch }} $REPO .
+    - name: Run Shell script
+      shell: bash
+      run: script.sh
+    - name: Push to branch
+      shell: bash
+      run: |
+        git push

@@ -1,0 +1,24 @@
+name: Sync Upstream changes Periodically
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'Repository to sync from'
+        required: true
+        default: 'BlastLauncher/extensions'
+
+  # schedule:
+  #   # Sync changes hourly
+  #   - cron: '0 * * * *'
+
+jobs:
+  sync_upstream:
+    name: Sync Upstream changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: sync
+        uses: BlastLauncher/actions/cherry-pick-upstream@main
+        with:
+          repository: ${{ inputs.repository }}
