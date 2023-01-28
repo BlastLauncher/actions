@@ -1,4 +1,4 @@
-name: Sync Upstream changes Periodically
+name: Sync Upstream changes
 
 on:
   workflow_dispatch:
@@ -12,9 +12,9 @@ on:
         required: true
         default: https://github.com/raycast/extensions.git
 
-  # schedule:
-  #   # Sync changes hourly
-  #   - cron: '0 * * * *'
+  schedule:
+    # hourly
+    - cron: '0 * * * *'
 
 jobs:
   sync_upstream:
@@ -24,8 +24,8 @@ jobs:
       - id: sync
         uses: BlastLauncher/actions/cherry-pick-upstream@main
         with:
-          repository: ${{ inputs.repository }}
+          repository: ${{ inputs.repository || 'BlastLauncher/extensions' }}
           token: ${{ secrets.GH_PAT }}
-          upstream_repository: ${{ inputs.upstream_repository }}
+          upstream_repository: ${{ inputs.upstream_repository || 'https://github.com/raycast/extensions.git' }}
           commit_name: 'blastlauncher-bot[bot]'
           commit_email: '123755008+blastlauncher-bot[bot]@users.noreply.github.com'
