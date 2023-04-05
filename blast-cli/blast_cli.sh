@@ -104,6 +104,12 @@ for dir in "${paths[@]}" ; do
 
     ### Create .npmrc if needed
     cleanup_npmrc=false
+
+    if [ -z "$npm_token" ]; then
+        echo "//registry.npmjs.org/:_authToken=$npm_token" > .npmrc
+        cleanup_npmrc = true
+    fi
+
     # api_version=$(jq '.dependencies."@raycast/api"' package.json)
     # if [[ "$api_version" == *"alpha"* ]]; then
     #     if [ -z "$npm_token" ]; then
@@ -145,7 +151,7 @@ for dir in "${paths[@]}" ; do
     # set -e
     # if [ $last_exit_code -eq 0 ]; then
     #     set +e
-    #     $ray_build_publish 2>&1 | tee $ray_ci_log_file ; test ${PIPESTATUS[0]} -eq 0
+    $ray_build_publish 2>&1 | tee $ray_ci_log_file ; test ${PIPESTATUS[0]} -eq 0
     #     last_exit_code=${?}
     #     set -e
     # fi
