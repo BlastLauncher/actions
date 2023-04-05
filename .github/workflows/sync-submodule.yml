@@ -1,0 +1,27 @@
+name: Sync Upstream changes to submodule
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: "Repository to sync from"
+        required: true
+        default: "BlastLauncher/raycast-extensions-mirror"
+
+  # schedule:
+  #   # hourly
+  #   - cron: '0 * * * *'
+
+jobs:
+  sync_upstream:
+    name: Sync Upstream changes
+    runs-on: ubuntu-latest
+    steps:
+      - id: sync
+        uses: BlastLauncher/actions/update-submodule@main
+        with:
+          repository: ${{ inputs.repository || 'BlastLauncher/raycast-extensions-mirror' }}
+          token: ${{ secrets.GH_PAT }}
+          commit_name: "blastlauncher-bot[bot]"
+          commit_email: "123755008+blastlauncher-bot[bot]@users.noreply.github.com"
+          submodule_path: "raycast_extensions"

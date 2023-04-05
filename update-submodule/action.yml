@@ -1,0 +1,52 @@
+name: Update submodule
+description: 'Update submodule to latest commit'
+inputs:
+  repository:
+    description: 'Repository to update to from'
+    required: true
+  token:
+    description: 'Personal Access Token to use for the target repository'
+    required: true
+  commit_name:
+    description: 'Name to use for the commit'
+    required: true
+    default: 'GitHub Action'
+  commit_email:
+    description: 'Email to use for the commit'
+    required: true
+  submodule_path:
+    description: 'Path to the submodule'
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Partial Clone
+      shell: bash
+      run: |
+        REPO="https://${GITHUB_ACTOR}:${{ inputs.token }}@github.com/${{ inputs.repository }}.git"
+        git clone --filter=blob:none --sparse --depth 1 $REPO repo
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - name: Config git for repo
+      shell: bash
+      working-directory: repo
+      run: |
+        git config user.name "${{ inputs.commit_name }}"
+        git config user.email "${{ inputs.commit_email }}"
+    - name: Run Shell script
+      shell: bash
+      working-directory: repo
+      run: |
+        git submodule update --remote --merge ${{ inputs.submodule_path }}
+    - name: Commit changes
+      shell: bash
+      working-directory: repo
+      run: |
+        git add ${{ inputs.submodule_path }}
+        HEAD=$(git rev-parse HEAD)
+        git commit -m "Update submodule to latest commit $HEAD"
+    - name: Push to branch
+      shell: bash
+      working-directory: repo
+      run: |
+        git push

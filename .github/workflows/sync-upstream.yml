@@ -4,17 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       repository:
-        description: 'Repository to sync from'
+        description: "Repository to sync from"
         required: true
-        default: 'BlastLauncher/extensions'
+        default: "BlastLauncher/extensions"
       upstream_repository:
-        description: 'Upstream repository to sync from'
+        description: "Upstream repository to sync from"
         required: true
         default: https://github.com/raycast/extensions.git
 
-  schedule:
-    # hourly
-    - cron: '0 * * * *'
+  # schedule:
+  #   # hourly
+  #   - cron: '0 * * * *'
 
 jobs:
   sync_upstream:
@@ -27,5 +27,5 @@ jobs:
           repository: ${{ inputs.repository || 'BlastLauncher/extensions' }}
           token: ${{ secrets.GH_PAT }}
           upstream_repository: ${{ inputs.upstream_repository || 'https://github.com/raycast/extensions.git' }}
-          commit_name: 'blastlauncher-bot[bot]'
-          commit_email: '123755008+blastlauncher-bot[bot]@users.noreply.github.com'
+          commit_name: "blastlauncher-bot[bot]"
+          commit_email: "123755008+blastlauncher-bot[bot]@users.noreply.github.com"
