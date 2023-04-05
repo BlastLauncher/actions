@@ -106,6 +106,10 @@ for dir in "${paths[@]}" ; do
     cleanup_npmrc=false
 
     if [ -z "$npm_token" ]; then
+        echo "::error::Private npm_token is required"
+        exit_code=1
+        continue
+    else
         echo "//registry.npmjs.org/:_authToken=$npm_token" > .npmrc
         cleanup_npmrc = true
     fi
@@ -149,12 +153,14 @@ for dir in "${paths[@]}" ; do
     # $ray_validate 2>&1 | tee $ray_ci_log_file ; test ${PIPESTATUS[0]} -eq 0
     # last_exit_code=${?}
     # set -e
-    # if [ $last_exit_code -eq 0 ]; then
-    #     set +e
-    $ray_build_publish 2>&1 | tee $ray_ci_log_file ; test ${PIPESTATUS[0]} -eq 0
-    #     last_exit_code=${?}
-    #     set -e
-    # fi
+
+    # Run command
+    if [ $last_exit_code -eq 0 ]; then
+        set +e
+        $ray_build_publish 2>&1 | tee $ray_ci_log_file ; test ${PIPESTATUS[0]} -eq 0
+        last_exit_code=${?}
+        set -e
+    fi
 
     #cleanup npm
     rm -rf ./node_modules
