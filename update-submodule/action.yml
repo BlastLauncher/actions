@@ -49,8 +49,6 @@ runs:
         echo "full_repo_name=${full_repo_name}" >> $GITHUB_OUTPUT
     - name: Fetch latest commit sha with GitHub Rest API
       id: get_latest_commit
-      shell: bash
-      working-directory: repo
       uses: sergeysova/jq-action@v2
       with:
         cmd: |
