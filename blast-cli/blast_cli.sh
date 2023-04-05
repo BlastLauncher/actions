@@ -159,7 +159,7 @@ for dir in "${paths[@]}" ; do
     if [ $last_exit_code -ne 0 ]; then
         error_message=`cat $ray_ci_log_file | tail -1`
         echo "::error title=$command failed for $extension_folder::$error_message"
-    else
+    # else
         # if [ "$command" == "publish" ]; then
         #     author=`cat package.json | jq -r '.author | values'`
         #     owner=`cat package.json | jq -r '.owner | values'`
