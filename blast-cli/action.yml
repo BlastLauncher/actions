@@ -29,6 +29,7 @@ runs:
       with:
         node-version: 16
     - name: Install blast cli
+      shell: bash
       run: npm install -g @blastlauncher/cli
     - name: Execute command
       shell: bash
