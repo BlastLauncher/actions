@@ -111,7 +111,7 @@ for dir in "${paths[@]}" ; do
         continue
     else
         echo "//registry.npmjs.org/:_authToken=$npm_token" > .npmrc
-        cleanup_npmrc = true
+        cleanup_npmrc=true
     fi
 
     # api_version=$(jq '.dependencies."@raycast/api"' package.json)
