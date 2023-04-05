@@ -110,7 +110,7 @@ for dir in "${paths[@]}" ; do
         exit_code=1
         continue
     else
-        echo "//registry.npmjs.org/:_authToken=$npm_token" > .npmrc
+        echo "//registry.npmjs.org/:_authToken=$npm_token" > ~/.npmrc
         cleanup_npmrc=true
     fi
 
@@ -143,11 +143,6 @@ for dir in "${paths[@]}" ; do
         continue
     fi
 
-    ### Cleanup `.npmrc`
-    if [ "$cleanup_npmrc" = true ] ; then
-        rm .npmrc
-    fi
-
     ### Validate
     # set +e
     # $ray_validate 2>&1 | tee $ray_ci_log_file ; test ${PIPESTATUS[0]} -eq 0
@@ -160,6 +155,11 @@ for dir in "${paths[@]}" ; do
         $ray_build_publish 2>&1 | tee $ray_ci_log_file ; test ${PIPESTATUS[0]} -eq 0
         last_exit_code=${?}
         set -e
+    fi
+
+    ### Cleanup `.npmrc`
+    if [ "$cleanup_npmrc" = true ] ; then
+        rm ~/.npmrc
     fi
 
     #cleanup npm
