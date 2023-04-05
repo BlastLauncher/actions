@@ -63,8 +63,12 @@ runs:
       shell: bash
       working-directory: repo
       run: |
-        git add ${{ inputs.submodule_path }}
-        git commit -m "Update submodule to latest commit ${{ steps.get_latest_commit.outputs.value }}"
+        if [[ -z $(git status --porcelain) ]]; then
+          echo "No changes found in workspace. Aborting commit."
+        else
+          git add "${{ inputs.submodule_path }}"
+          git commit -m "Update submodule to latest commit ${{ steps.get_latest_commit.outputs.value }}"
+        fi
     - name: Push to branch
       shell: bash
       working-directory: repo
