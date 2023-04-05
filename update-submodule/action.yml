@@ -1,21 +1,21 @@
 name: Update submodule
-description: 'Update submodule to latest commit'
+description: "Update submodule to latest commit"
 inputs:
   repository:
-    description: 'Repository to update to from'
+    description: "Repository to update to from"
     required: true
   token:
-    description: 'Personal Access Token to use for the target repository'
+    description: "Personal Access Token to use for the target repository"
     required: true
   commit_name:
-    description: 'Name to use for the commit'
+    description: "Name to use for the commit"
     required: true
-    default: 'GitHub Action'
+    default: "GitHub Action"
   commit_email:
-    description: 'Email to use for the commit'
+    description: "Email to use for the commit"
     required: true
   submodule_path:
-    description: 'Path to the submodule'
+    description: "Path to the submodule"
     required: true
 runs:
   using: composite
@@ -33,18 +33,40 @@ runs:
       run: |
         git config user.name "${{ inputs.commit_name }}"
         git config user.email "${{ inputs.commit_email }}"
-    - name: Run Shell script
+    - name: Get submodule git repository and print to step output
+      id: full_repo_name
       shell: bash
       working-directory: repo
       run: |
-        git submodule update --remote --merge ${{ inputs.submodule_path }}
+        git_output=$(git config -f .gitmodules -l)
+
+        # Use sed to extract the submodule URL
+        submodule_git_url=$(echo "$git_output" | sed -n 's/submodule\..*\.url=\(.*\)/\1/p')
+
+        # get org/repo from URL
+        full_repo_name=$(echo "$submodule_git_url" | sed -n 's/.*github.com\/\(.*\)\.git/\1/p')
+
+        echo "full_repo_name=${full_repo_name}" >> $GITHUB_OUTPUT
+    - name: Fetch latest commit sha with GitHub Rest API
+      id: get_latest_commit
+      shell: bash
+      working-directory: repo
+      uses: sergeysova/jq-action@v2
+      with:
+        cmd: |
+          curl -s -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{ steps.full_repo_name.outputs.full_repo_name }}/commits | jq -r '.[0] | .sha'
+    - name: Update submodule index
+      shell: bash
+      working-directory: repo
+      run: |
+        echo "Repo URL: ${{ steps.full_repo_name.outputs.value }}"
+        git update-index --cacheinfo 160000 ${{ steps.get_latest_commit.outputs.value }} ${{ inputs.submodule_path }}
     - name: Commit changes
       shell: bash
       working-directory: repo
       run: |
         git add ${{ inputs.submodule_path }}
-        HEAD=$(git rev-parse HEAD)
-        git commit -m "Update submodule to latest commit $HEAD"
+        git commit -m "Update submodule to latest commit ${{ steps.get_latest_commit.outputs.value }}"
     - name: Push to branch
       shell: bash
       working-directory: repo
