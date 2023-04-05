@@ -8,9 +8,9 @@ on:
         required: true
         default: "BlastLauncher/raycast-extensions-mirror"
 
-  # schedule:
-  #   # hourly
-  #   - cron: '0 * * * *'
+  schedule:
+    # hourly
+    - cron: '0 * * * *'
 
 jobs:
   sync_submodule:
